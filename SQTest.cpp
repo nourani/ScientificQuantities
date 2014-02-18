@@ -122,7 +122,7 @@ int main( int argc, char ** argv ) {
 	cout << "\n\t" << a4 << " in grad: " << a4.in( gradian ) << " (c.lees!!!)" << endl;
 
 	double l = l1;
-	cout << "\n\tAssigning a length to a double = " << l << endl;
+	cout << "\n\tAssigning a length (" << l1 << ") to a double: " << l << endl;
 
 	return 0;
 }

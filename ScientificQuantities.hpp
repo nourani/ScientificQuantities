@@ -19,6 +19,8 @@ namespace SciQ {
 
 	// The Quantity class based on the SI BASE units:
 	// https://en.wikipedia.org/wiki/International_System_of_Units#Units_and_prefixes
+	// TODO: can we use a string literal? We can use this to define the unit as well as
+	//		coping with quantities with similar base units
 	template<int L, int M, int T, int EC, int TT, int AS, int LI>
 	class Quantity {
 	public:
