@@ -13,6 +13,7 @@
 #define SCIENTIFICQUANTITIES_HPP_
 
 #include <cmath>
+#include <assert.h>
 
 namespace SciQ {
 
@@ -23,18 +24,23 @@ namespace SciQ {
 	public:
 		// Constructor with explicit declaration ensures that a UNIT is given during
 		// variable initialization
-		constexpr explicit Quantity( double val )
-					: value( val ) {
+		constexpr explicit Quantity( double val=0 )
+		: value( val ) {
 		}
 
 		constexpr Quantity( const Quantity& x )
-					: value( x.value ) {
+		: value( x.value ) {
 
 		}
 
 		// Conversion to a different unit
 		constexpr double in( const Quantity& rhs ) {
 			return value / rhs.value;
+		}
+
+		template<int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+		bool compType( const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+			return (L==L2 && M==M2 && T==T2 && EC==EC2 && TT==TT2 && AS==AS2 && LI==LI2);
 		}
 
 		// Get function
@@ -52,6 +58,7 @@ namespace SciQ {
 			value -= rhs.value;
 			return *this;
 		}
+
 		// Overloading the double operator allows us to work with the class seamlessly with other packages and environments
 		operator double() {
 			return value;
@@ -61,174 +68,7 @@ namespace SciQ {
 		double value;
 	};
 
-	// Global operator overloads for the Quantity class
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) {
-		std::string unit = "";
-		if( M ) {
-			if( M < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "kg";
-			if( abs( M ) > 1 ) {
-				unit += std::to_string( abs( M ) );
-			}
-		}
-		if( L ) {
-			if( L < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "m";
-			if( abs( L ) > 1 ) {
-				unit += std::to_string( abs( L ) );
-			}
-		}
-		if( T ) {
-			if( T < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "s";
-			if( abs( T ) > 1 ) {
-				unit += std::to_string( abs( T ) );
-			}
-		}
-		if( EC ) {
-			if( EC < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "A";
-			if( abs( EC ) > 1 ) {
-				unit += std::to_string( abs( EC ) );
-			}
-		}
-		if( TT ) {
-			if( TT < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "K";
-			if( abs( TT ) > 1 ) {
-				unit += std::to_string( abs( TT ) );
-			}
-		}
-		if( AS ) {
-			if( AS < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "mol";
-			if( abs( AS ) > 1 ) {
-				unit += std::to_string( abs( AS ) );
-			}
-		}
-		if( LI ) {
-			if( T < 0 ) {
-				if( !unit.size() )
-					unit += "1";
-				unit += "/";
-			}
-			unit += "cd";
-			if( abs( LI ) > 1 ) {
-				unit += std::to_string( abs( LI ) );
-			}
-		}
-		if( M == 0 && L == 0 && T == 0 && EC == 0 && TT == 0 && AS == 0 && LI == 0 ) { // angles are dimensionless although m/m or m2/m2
-			unit += "rad";
-		}
-		os << q.getValue() << " " << unit;
-		return os;
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<L, M, T, EC, TT, AS, LI> operator+( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) += rhs;
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<L, M, T, EC, TT, AS, LI> operator-(
-				const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) -= rhs;
-	}
-	template<int M1, int L1, int T1, int EC1, int TT1, int AS1, int LI1, int M2, int L2, int T2,
-				int EC2, int TT2, int AS2, int LI2>
-	Quantity<M1 + M2, L1 + L2, T1 + T2, EC1 + EC2, TT1 + TT2, AS1 + AS2, LI1 + LI2> operator*(
-				const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
-				const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-		return Quantity<M1 + M2, L1 + L2, T1 + T2, EC1 + EC2, TT1 + TT2, AS1 + AS2, LI1 + LI2>(
-					lhs.getValue() * rhs.getValue() );
-	}
-	template<int M1, int L1, int T1, int EC1, int TT1, int AS1, int LI1, int M2, int L2, int T2,
-				int EC2, int TT2, int AS2, int LI2>
-	Quantity<M1 - M2, L1 - L2, T1 - T2, EC1 - EC2, TT1 - TT2, AS1 - AS2, LI1 - LI2> operator/(
-				const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
-				const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-		return Quantity<M1 - M2, L1 - L2, T1 - T2, EC1 - EC2, TT1 - TT2, AS1 - AS2, LI1 - LI2>(
-					lhs.getValue() / rhs.getValue() );
-	}
 
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator==( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() == rhs.getValue());
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator!=( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() != rhs.getValue());
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator<=( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() <= rhs.getValue());
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator>=( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() >= rhs.getValue());
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator<( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() < rhs.getValue());
-	}
-	template<int L, int M, int T, int EC, int TT, int AS, int LI>
-	bool operator>( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return (lhs.getValue() > rhs.getValue());
-	}
-
-
-	// Global operator overloading with typename Type
-	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<L, M, T, EC, TT, AS, LI> operator*( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Type rhs ) {
-		return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() * rhs );
-	}
-	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<L, M, T, EC, TT, AS, LI> operator*( const Type lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return Quantity<L, M, T, EC, TT, AS, LI>( lhs * rhs.getValue() );
-	}
-	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<L, M, T, EC, TT, AS, LI> operator/( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
-				const Type rhs ) {
-		return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() / rhs );
-	}
-	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-	Quantity<-L, -M, -T, -EC, -TT, -AS, -LI> operator/( const Type lhs,
-				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-		return Quantity<-L, -M, -T, -EC, -TT, -AS, -LI>( lhs / rhs.getValue() );
-	}
 
 
 	// C++11 Physical quantity classes
@@ -242,6 +82,10 @@ namespace SciQ {
 	using Luminous		= Quantity<0,0,0,0,0,0,1>;
 
 	// Derived SI units
+	// TODO: How can we differentiate between
+	//	- Angle vs SolidAngle and
+	// 	- Luminous vs Luminous Flux and
+	//	- Frequency vs Radioactivity??
 	using Angle 		= Quantity<0,0,0,0,0,0,0>;
 	using SolidAngle	= Quantity<0,0,0,0,0,0,0>;
 	using Frequency 	= Quantity<0,0,-1,0,0,0,0>;
@@ -411,6 +255,210 @@ namespace SciQ {
 	constexpr Speed operator"" _kmph(long double x) {return Speed(x*1000./3600.);}
 	constexpr Speed operator"" _kmph(unsigned long long x) {return Speed(x*1000./3600.);}
 
+	/*
+	 * Global operator overloads for the Quantity class
+	 */
+	// TODO: This is ugly, can we do this more cleverly?
+	template<int L, int M, int T, int EC, int TT, int AS, int LI>
+	std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) {
+		std::string unit = "";
+
+		if( Length().compType(q) ) {
+			unit += "m";
+		}
+		else if( Mass().compType(q) ) {
+			unit += "kg";
+		}
+		else if( Time().compType( q ) ) {
+			unit += "s";
+		}
+		else if( Current().compType( q ) ) {
+			unit += "A";
+		}
+		else if( Temperature().compType( q ) ) {
+			unit += "K";
+		}
+		else if( Substance().compType( q ) ) {
+			unit += "mol";
+		}
+		else if( Luminous().compType( q ) ) {
+			unit += "cd";
+		}
+		else if( Angle().compType( q ) ) {
+			unit += "rad";
+		}
+		else if( SolidAngle().compType( q ) ) {
+			unit += "sr";
+		}
+		else if( Frequency().compType( q ) ) {
+			unit += "Hz";
+		}
+		else if( Force().compType( q ) ) {
+			unit += "N";
+		}
+		else if( Pressure().compType( q ) ) {
+			unit += "Pa";
+		}
+		else if( Energy().compType( q ) ) {
+			unit += "J";
+		}
+		else if( Power().compType( q ) ) {
+			unit += "W";
+		}
+		else if( Charge().compType( q ) ) {
+			unit += "C";
+		}
+		else if( Voltage().compType( q ) ) {
+			unit += "V";
+		}
+		else if( Capacitance().compType( q ) ) {
+			unit += "F";
+		}
+		else if( Resistance().compType( q ) ) {
+			unit += "Ohm";
+		}
+		else if( Conductance().compType( q ) ) {
+			unit += "S";
+		}
+		else if( MagneticFlux().compType( q ) ) {
+			unit += "Wb";
+		}
+		else if( MagneticField().compType( q ) ) {
+			unit += "T";
+		}
+		else if( Inductance().compType( q ) ) {
+			unit += "H";
+		}
+		else if( LuminousFlux().compType( q ) ) {
+			unit += "lm";
+		}
+		else if( Illuminance().compType( q ) ) {
+			unit += "lx";
+		}
+		else if( Radioactivity().compType( q ) ) {
+			unit += "Bq";
+		}
+		else if( AbsorbedDose().compType( q ) ) {
+			unit += "Gy";
+		}
+		else if( EquivalentDose().compType( q ) ) {
+			unit += "Sv";
+		}
+		else if( CatalyticActivity().compType( q ) ) {
+			unit += "kat";
+		}
+		else if( Area().compType( q ) ) {
+			unit += "m2";
+		}
+		else if( Volume().compType( q ) ) {
+			unit += "m3";
+		}
+		else if( Speed().compType( q ) ) {
+			unit += "m/s";
+		}
+		else if( Acceleration().compType( q ) ) {
+			unit += "m/s2";
+		}
+		else {
+			throw;
+		}
+		os << q.getValue() << " " << unit;
+		return os;
+	}
+
+	template<int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<L, M, T, EC, TT, AS, LI> operator+( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
+				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
+		return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) += rhs;
+	}
+	template<int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<L, M, T, EC, TT, AS, LI> operator-(
+				const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
+				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
+		return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) -= rhs;
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	Quantity<M1 + M2, L1 + L2, T1 + T2, EC1 + EC2, TT1 + TT2, AS1 + AS2, LI1 + LI2> operator*(
+				const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		return Quantity<M1 + M2, L1 + L2, T1 + T2, EC1 + EC2, TT1 + TT2, AS1 + AS2, LI1 + LI2>(
+					lhs.getValue() * rhs.getValue() );
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	Quantity<M1 - M2, L1 - L2, T1 - T2, EC1 - EC2, TT1 - TT2, AS1 - AS2, LI1 - LI2> operator/(
+				const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		return Quantity<M1 - M2, L1 - L2, T1 - T2, EC1 - EC2, TT1 - TT2, AS1 - AS2, LI1 - LI2>(
+					lhs.getValue() / rhs.getValue() );
+	}
+	// TODO: How can we enforce during compile that the types of the values being compared are the same?
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator==( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() == rhs.getValue());
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator!=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() != rhs.getValue());
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator<=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() <= rhs.getValue());
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator>=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() >= rhs.getValue());
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator<( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() < rhs.getValue());
+	}
+	template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, int L2, int M2, int T2,
+	int EC2, int TT2, int AS2, int LI2>
+	bool operator>( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+				const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+		assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2 );
+		return (lhs.getValue() > rhs.getValue());
+	}
+
+
+	// Global operator overloading with typename Type
+	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<L, M, T, EC, TT, AS, LI> operator*( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
+				const Type rhs ) {
+		return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() * rhs );
+	}
+	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<L, M, T, EC, TT, AS, LI> operator*( const Type lhs,
+				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
+		return Quantity<L, M, T, EC, TT, AS, LI>( lhs * rhs.getValue() );
+	}
+	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<L, M, T, EC, TT, AS, LI> operator/( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
+				const Type rhs ) {
+		return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() / rhs );
+	}
+	template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+	Quantity<-L, -M, -T, -EC, -TT, -AS, -LI> operator/( const Type lhs,
+				const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
+		return Quantity<-L, -M, -T, -EC, -TT, -AS, -LI>( lhs / rhs.getValue() );
+	}
 
 }
 // namespace SciQ;
