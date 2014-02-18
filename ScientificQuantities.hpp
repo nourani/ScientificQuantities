@@ -6,7 +6,8 @@
  * 	- http://grahampentheny.com/archives/106 (explicit class declaration)
  *
  *  Created on: Feb 11, 2014
- *      Author: navid
+ *      Author: navid nourani-vatani
+ *      Location: https://github.com/nourani/ScientificQuantities
  */
 
 #ifndef SCIENTIFICQUANTITIES_HPP_

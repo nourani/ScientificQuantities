@@ -2,7 +2,8 @@
  * main.cpp
  *
  *  Created on: Feb 11, 2014
- *      Author: navid
+ *      Author: navid nourani-vatani
+ *      Locaton: https://github.com/nourani/ScientificQuantities
  */
 
 #include <iostream>
