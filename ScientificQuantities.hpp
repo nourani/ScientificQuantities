@@ -17,7 +17,6 @@
 #include <cmath>
 #include <assert.h>
 #include <stdexcept>
-#include <sstream>
 #include <vector>
 
 namespace SciQ {
@@ -273,19 +272,17 @@ namespace SciQ {
         const std::vector<int> exponents { 
             L, M, T, EC, TT, AS, LI
         } ;
-        std::ostringstream unit ; 
-        unit << q.getValue() ;
+        os << q.getValue() ;
         for(int i=0; i<exponents.size(); ++i) {
             if (0 == exponents[i]) {
                 continue ;
             } 
             if (1 == exponents[i]) {
-                unit << " " << base_units[i] ; 
+                os << " " << base_units[i] ; 
             } else {
-                unit << " " << base_units[i] << "^" << exponents[i] ;
+                os << " " << base_units[i] << "^" << exponents[i] ;
             }
         }
-        os << unit.str() ; 
         return os ; 
 	}
 
