@@ -125,16 +125,22 @@ namespace SciQ {
 
 
 	// These are handy for the Convert functions to convert between units
+    constexpr Length kilometer( 1e3 ) ;
 	constexpr Length kilometre( 1e3 );
+    constexpr Length meter( 1.0 ) ;
 	constexpr Length metre( 1.0 );
+    constexpr Length centimeter( 1e-2 ) ;
 	constexpr Length centimetre( 1e-2 );
+    constexpr Length millimeter( 1e-3 ) ;
 	constexpr Length milimetre( 1e-3 );
 
 	constexpr Mass kilogram( 1.0 );
 	constexpr Mass gram( 1e-3 );
 	constexpr Mass tonne( 1e3 );
 
+    constexpr Area meter2( 1.0 ) ;
 	constexpr Area metre2( 1.0 );
+    constexpr Area kilometer2( 1.0e6 );
 	constexpr Area kilometre2( 1.0e6 );
 
 	constexpr Time second( 1.0 );
