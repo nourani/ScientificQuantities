@@ -114,6 +114,8 @@ namespace SciQ {
 	using AbsorbedDose 	= Quantity<2,0,-2,0,0,0,0>;
 	using EquivalentDose= Quantity<2,0,-2,0,0,0,0>;
 	using CatalyticActivity = Quantity<0,0,-1,0,0,1,0>;
+    using Permittivity = Quantity<-3,-1,4,2,0,0,0>;
+    using Permeability = Quantity<1,1,-2,-2,0,0,0>;
 
 	// Additional units for our purpose
 	using Area 			= Quantity<2,0,0,0,0,0,0>;
