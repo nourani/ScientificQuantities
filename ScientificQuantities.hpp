@@ -13,6 +13,7 @@
 #ifndef SCIENTIFICQUANTITIES_HPP_
 #define SCIENTIFICQUANTITIES_HPP_
 
+#include <ostream>
 #include <cmath>
 #include <assert.h>
 
