@@ -17,6 +17,8 @@
 #include <cmath>
 #include <assert.h>
 #include <stdexcept>
+#include <sstream>
+#include <vector>
 
 namespace SciQ {
 
@@ -263,112 +265,28 @@ namespace SciQ {
 	/*
 	 * Global operator overloads for the Quantity class
 	 */
-	// TODO: This is ugly, can we do this more cleverly?
 	template<int L, int M, int T, int EC, int TT, int AS, int LI>
 	std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) {
-		std::string unit = "";
-
-		if( Length().compType(q) ) {
-			unit += "m";
-		}
-		else if( Mass().compType(q) ) {
-			unit += "kg";
-		}
-		else if( Time().compType( q ) ) {
-			unit += "s";
-		}
-		else if( Current().compType( q ) ) {
-			unit += "A";
-		}
-		else if( Temperature().compType( q ) ) {
-			unit += "K";
-		}
-		else if( Substance().compType( q ) ) {
-			unit += "mol";
-		}
-		else if( Luminous().compType( q ) ) {
-			unit += "cd";
-		}
-		else if( Angle().compType( q ) ) {
-			unit += "rad";
-		}
-		else if( SolidAngle().compType( q ) ) {
-			unit += "sr";
-		}
-		else if( Frequency().compType( q ) ) {
-			unit += "Hz";
-		}
-		else if( Force().compType( q ) ) {
-			unit += "N";
-		}
-		else if( Pressure().compType( q ) ) {
-			unit += "Pa";
-		}
-		else if( Energy().compType( q ) ) {
-			unit += "J";
-		}
-		else if( Power().compType( q ) ) {
-			unit += "W";
-		}
-		else if( Charge().compType( q ) ) {
-			unit += "C";
-		}
-		else if( Voltage().compType( q ) ) {
-			unit += "V";
-		}
-		else if( Capacitance().compType( q ) ) {
-			unit += "F";
-		}
-		else if( Resistance().compType( q ) ) {
-			unit += "Ohm";
-		}
-		else if( Conductance().compType( q ) ) {
-			unit += "S";
-		}
-		else if( MagneticFlux().compType( q ) ) {
-			unit += "Wb";
-		}
-		else if( MagneticField().compType( q ) ) {
-			unit += "T";
-		}
-		else if( Inductance().compType( q ) ) {
-			unit += "H";
-		}
-		else if( LuminousFlux().compType( q ) ) {
-			unit += "lm";
-		}
-		else if( Illuminance().compType( q ) ) {
-			unit += "lx";
-		}
-		else if( Radioactivity().compType( q ) ) {
-			unit += "Bq";
-		}
-		else if( AbsorbedDose().compType( q ) ) {
-			unit += "Gy";
-		}
-		else if( EquivalentDose().compType( q ) ) {
-			unit += "Sv";
-		}
-		else if( CatalyticActivity().compType( q ) ) {
-			unit += "kat";
-		}
-		else if( Area().compType( q ) ) {
-			unit += "m2";
-		}
-		else if( Volume().compType( q ) ) {
-			unit += "m3";
-		}
-		else if( Speed().compType( q ) ) {
-			unit += "m/s";
-		}
-		else if( Acceleration().compType( q ) ) {
-			unit += "m/s2";
-		}
-		else {
-			throw std::invalid_argument("Invalid or unsupported unit.") ;
-		}
-		os << q.getValue() << " " << unit;
-		return os;
+        const std::vector<std::string> base_units {
+            "m", "kg", "s", "A", "K", "mol", "cd"
+        } ;
+        const std::vector<int> exponents { 
+            L, M, T, EC, TT, AS, LI
+        } ;
+        std::ostringstream unit ; 
+        unit << q.getValue() ;
+        for(int i=0; i<exponents.size(); ++i) {
+            if (0 == exponents[i]) {
+                continue ;
+            } 
+            if (1 == exponents[i]) {
+                unit << " " << base_units[i] ; 
+            } else {
+                unit << " " << base_units[i] << "^" << exponents[i] ;
+            }
+        }
+        os << unit.str() ; 
+        return os ; 
 	}
 
 	template<int L, int M, int T, int EC, int TT, int AS, int LI>
