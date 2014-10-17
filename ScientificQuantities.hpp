@@ -16,6 +16,7 @@
 #include <ostream>
 #include <cmath>
 #include <assert.h>
+#include <stdexcept>
 
 namespace SciQ {
 
@@ -364,7 +365,7 @@ namespace SciQ {
 			unit += "m/s2";
 		}
 		else {
-			throw;
+			throw std::invalid_argument("Invalid or unsupported unit.") ;
 		}
 		os << q.getValue() << " " << unit;
 		return os;
