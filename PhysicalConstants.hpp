@@ -13,6 +13,7 @@
  * names but with "Value" suffix. The symbolic names of the constants are 
  * same as those used by NIST.
  */
+#include "ScientificQuantities.hpp"
 
 namespace SciQ {
     //
