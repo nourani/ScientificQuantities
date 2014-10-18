@@ -27,63 +27,135 @@ namespace SciQ {
      */
     constexpr int NUM_BASE_UNITS = 7 ;
 
+    /**
+     * This template is used to specify names of fundamental units of a
+     * specific Quantity, T. For example, the fundamental unit of
+     * Quantity<1,0,0,0,0,0,0> (i.e. Length) can be specified to be "m". This
+     * information will be used when an instance of this Quantity<> is
+     * displayed using operator<<(). Fundamental units of several quantities
+     * are defined later in this file and users of this header may add
+     * fundamental units for their own custom quantities. However, the same
+     * quantity may not have two different fundamental units (this compiler
+     * will catch this). If a quantity does not have an explicitly defined
+     * FundamentalUnit then it will still be printed using a generic version
+     * of operator<<() that simply displays its value and dimensionality.
+     */
     template<typename T>
     struct FundamentalUnit 
     {} ;
 
-    // The Quantity class based on the SI BASE units:
-    // https://en.wikipedia.org/wiki/International_System_of_Units#Units_and_prefixes
-    // TODO: can we use a string literal? We can use this to define the unit as well as
-    //              coping with quantities with similar base units
+    /**
+     * Representation of a physical/scientific quantity using a combination of
+     * seven base quantities: length (L), mass (M), temperature (T), electric
+     * current (EC), thermodynamic temperature (TT), amount of substance (AS),
+     * and luminous intensity (LI). See
+     * [this](http://physics.nist.gov/cuu/Units/units.html) page for more
+     * information. 
+     *
+     * \todo Can we use a string literal? We can use this to define the unit as
+     * well as coping with quantities with similar base units
+     * 
+     * \see 
+     * - [International System of Units: Units and Prefixes](https://en.wikipedia.org/wiki/International_System_of_Units#Units_and_prefixes)
+     * - [SI Base Units](http://physics.nist.gov/cuu/Units/units.html)
+     * - [Application of C++11 User-Defined Literals to Handling Scientific Quantities, Number Representation and String Manipulation](http://www.codeproject.com/Articles/447922/Application-of-Cplusplus11-User-Defined-Literals-t)
+     * - [Fixing it once and for all: Enforcing units of measure in C++11](http://grahampentheny.com/archives/106)
+     *
+     */
     template<int L, int M, int T, int EC, int TT, int AS, int LI>
     class Quantity {
     public:
+        /**
+         * The type of the current Quantity. 
+         */
         using Type = Quantity<L, M, T, EC, TT, AS, LI> ;
+
+        /**
+         * The fundamental unit corresponding to the current quantity. 
+         */
         using FundamentalUnitType = FundamentalUnit<Type> ;
 
-        // Constructor with explicit declaration ensures that a UNIT is given during
-        // variable initialization
-        constexpr explicit Quantity( double val=0 )
+        /**
+         * Explicit constructor to make sure that a unit is given during 
+         * variable initialization. Creates a quantity with the specified
+         * value (default: 0) in its fundamental unit. 
+         */
+        constexpr explicit Quantity( double val=0 ) 
         : value( val ) {
         }
 
+        /**
+         * Create a copy of the specified quantity. 
+         */
         constexpr Quantity( const Quantity& x )
         : value( x.value ) {
-
         }
 
-        // Conversion to a different unit
+        /**
+         * Get the value of the current quantity in units of the specified 
+         * quantity, \c rhs. For example:
+         *
+         * \code
+         * Length a = 1000.0 * meter ; 
+         * std::cout << a.in(kilometer) << std::endl ;
+         * \endcode
+         *
+         * The above code will display "1" as \c a equal 1000 m and this
+         * value equals 1 km. 
+         */
         constexpr double in( const Quantity& rhs ) {
             return value / rhs.value;
         }
 
+        /**
+         * Check if two different instantiations of this template correspond
+         * to compatible physical values. In other works, all base unit 
+         * exponents for both instantiations are indentical.
+         *
+         * \todo Not sure if we need this.
+         */
         template<int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
         bool compType( const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
             return (L==L2 && M==M2 && T==T2 && EC==EC2 && TT==TT2 && AS==AS2 && LI==LI2);
         }
 
-        // Get function
+        /**
+         * Get the value of the current quantity in its fundamental SI unit.
+         */
         constexpr double getValue() {
             return value;
         }
 
-        // Operator overloading
+        /**
+         * Add the specified quantity, \c rhs, to this quantity. The value of
+         * this quantity is updated.
+         */
         Quantity& operator+=( const Quantity& rhs ) {
             value += rhs.value;
             return *this;
         }
 
+        /**
+         * Subtract the specified quantity, \c rhs, from this quantity. The 
+         * value of this quantity is updated.
+         */
         Quantity& operator-=( const Quantity& rhs ) {
             value -= rhs.value;
             return *this;
         }
 
-        // Overloading the double operator allows us to work with the class
-        // seamlessly with other packages and environments
+        /**
+         * Convert this quantity into a double. This is the same as calling
+         * getValue(). Overloading the double operator allows us to work with
+         * the class seamlessly with other packages and environments.
+         */
         operator double() {
             return value;
         }
     private:
+        /**
+         * Value of this quantity in its fundamental SI units.
+         */
         double value;
     };
 
