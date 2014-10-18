@@ -417,7 +417,7 @@ namespace SciQ {
     constexpr Speed operator"" _kmph(unsigned long long x) {return Speed(x*1000./3600.);}
 
     template<typename T>
-    struct IsFundamentalUnitAvailable
+    struct HasFundamentalUnit
     {
         using FunitType = typename T::FundamentalUnitType ;
 
@@ -431,7 +431,7 @@ namespace SciQ {
     } ;
 
     template<int L, int M, int T, int EC, int TT, int AS, int LI, 
-    typename std::enable_if<IsFundamentalUnitAvailable<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
+    typename std::enable_if<HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
     {
         using FunitType = typename Quantity<L, M, T, EC, TT, AS, LI>::FundamentalUnitType ;
@@ -737,7 +737,7 @@ namespace SciQ {
     } ;
 
     template<int L, int M, int T, int EC, int TT, int AS, int LI, 
-    typename std::enable_if<! IsFundamentalUnitAvailable<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
+    typename std::enable_if<not HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
     {
         static const std::array<std::string, NUM_BASE_UNITS> base_units {
