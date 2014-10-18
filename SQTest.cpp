@@ -102,7 +102,11 @@ int main( int argc, char ** argv ) {
          << "\t anglesecond: " << anglesecond << endl
          << "\t litre:       " << litre << endl
          << "\t bar:         " << bar << endl
-         << "\t atm:         " << atm << endl;
+         << "\t atm:         " << atm << endl
+         << "\t eV:          " << eV << endl
+         << "\t keV:         " << keV << endl 
+         << "\t MeV:         " << MeV << endl
+         ;
 
     cout << endl << "The following units are available: " << endl
          << "\t_km, _m, _cm, _mm, _nm" << endl
@@ -123,6 +127,7 @@ int main( int argc, char ** argv ) {
          << "\tElectric Constant (ep_0):         " << ElectricConstant << endl 
          << "\tMagnetic Constant (mu_0):         " << MagneticConstant << endl 
          << "\tElementary Charge (q_elem):       " << ElementaryCharge << endl 
+         << "\tElectron Charge (q_elec):         " << ElectronCharge << endl 
          << "\tElectron Mass (m_e):              " << ElectronMass << endl 
          ;
 
