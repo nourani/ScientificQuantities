@@ -1,3 +1,11 @@
 .cproject
 .project
 build/
+#ScientificQuantities.hpp#
+CMakeCache.txt
+CMakeFiles/
+Makefile
+SQTest
+cmake_install.cmake
+
+

@@ -611,6 +611,69 @@ namespace SciQ {
     } ;
 
     template<>
+    struct FundamentalUnit<DynamicViscosity>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "Pa s" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<AngularAcceleration>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "rad/s^2" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<Irradiance>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "W/m^2" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<Entropy>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "J/K" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<SpecificEntropy>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "J/(kg K)" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<ThermalConductivity>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "W/(m K)" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<ElectricFieldStrength>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "V/m" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<ElectricChargeDensity>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "C/m^3" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<ElectricFluxDensity>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "C/m^2" ;
+    } ;
+
+    template<>
     struct FundamentalUnit<Permittivity>
     {
         using NameType = const char* ;
@@ -622,6 +685,41 @@ namespace SciQ {
     {
         using NameType = const char* ;
         static constexpr NameType Name = "H/m" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<MolarEnergy>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "J/mol" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<MolarEntropy>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "J/(mol K)" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<Exposure>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "C/kg" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<AbsorbedDoseRate>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "Gy/s" ;
+    } ;
+
+    template<>
+    struct FundamentalUnit<CatalyticConcentration>
+    {
+        using NameType = const char* ;
+        static constexpr NameType Name = "kat/m^3" ;
     } ;
 
     template<>

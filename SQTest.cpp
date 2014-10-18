@@ -46,8 +46,29 @@ int main( int argc, char ** argv ) {
          << "\tAbsorbed dose:       " << AbsorbedDose(1) << endl
          << "\tEquivalent dose:     " << EquivalentDose(1) << endl
          << "\tCatalytic activity:  " << CatalyticActivity(1) << endl
+         << "\tDynamics Viscosity:  " << DynamicViscosity(1) << endl
+         << "\tMoment of Force:     " << MomentOfForce(1) << endl
+         << "\tSurface Tension:     " << SurfaceTension(1) << endl
+         << "\tAngular Velocity:    " << AngularVelocity(1) << endl
+         << "\tAngular Acceleration:" << AngularAcceleration(1) << endl
+         << "\tIrradiance:          " << Irradiance(1) << endl 
+         << "\tEntropy:             " << Entropy(1) << endl 
+         << "\tSpecific Entropy:    " << SpecificEntropy(1) << endl
+         << "\tSpecific Energy:     " << SpecificEnergy(1) << endl 
+         << "\tThermal Conductivity:" << ThermalConductivity(1) << endl 
+         << "\tEnergy Density:      " << EnergyDensity(1) << endl 
+         << "\tElectric Field Strength:" << ElectricFieldStrength(1) << endl 
+         << "\tElectric Charge Density:" << ElectricChargeDensity(1) << endl 
+         << "\tElectric Flux Density:  " << ElectricFluxDensity(1) << endl 
          << "\tPermittivity:        " << Permittivity(1) << endl
-         << "\tPermeability:        " << Permeability(1) << endl ;
+         << "\tPermeability:        " << Permeability(1) << endl 
+         << "\tMolar Energy:        " << MolarEnergy(1) << endl 
+         << "\tMolar Entropy:       " << MolarEntropy(1) << endl 
+         << "\tExposure:            " << Exposure(1) << endl 
+         << "\tAbsorbed Dose Rate:  " << AbsorbedDoseRate(1) << endl
+         << "\tRadiant Intensity:   " << RadiantIntensity(1) << endl
+         << "\tRadiance:            " << Radiance(1) << endl
+         << "\tCatalytic Concentration: " << CatalyticConcentration(1) << endl ;
 
     cout << endl << "Some additional units defined are: " << endl
          << "\tArea:                " << Area(1) << endl
