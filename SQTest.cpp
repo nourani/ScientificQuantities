@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "ScientificQuantities.hpp"
+#include "PhysicalConstants.hpp"
 
 using namespace SciQ;
 using namespace std;
@@ -116,6 +117,14 @@ int main( int argc, char ** argv ) {
          << "\t_Wb, _T" << endl
          << "\t_m2, _m3" << endl
          << "\t_mps, kmph" << endl;
+
+    cout << endl << "The following physical constants are available: " << endl
+         << "\tVacuum Impedance (z_0):           " << VacuumImpedance << endl 
+         << "\tElectric Constant (ep_0):         " << ElectricConstant << endl 
+         << "\tMagnetic Constant (mu_0):         " << MagneticConstant << endl 
+         << "\tElementary Charge (q_elem):       " << ElementaryCharge << endl 
+         << "\tElectron Mass (m_e):              " << ElectronMass << endl 
+         ;
 
     cout << endl << "Example usage:" << endl;
     Length l1 = 100_m;
