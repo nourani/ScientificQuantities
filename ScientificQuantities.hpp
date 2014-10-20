@@ -115,7 +115,8 @@ namespace SciQ {
          * \todo Not sure if we need this.
          */
         template<int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-        bool compType( const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+        constexpr bool 
+        compType( const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
             return (L==L2 && M==M2 && T==T2 && EC==EC2 && TT==TT2 && AS==AS2 && LI==LI2);
         }
 
@@ -163,21 +164,21 @@ namespace SciQ {
     // Arithmetic operators for Quantity<> instances.
     //
     template<int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<L, M, T, EC, TT, AS, LI> 
+    constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator+( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) += rhs;
     }
 
     template<int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<L, M, T, EC, TT, AS, LI> 
+    constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator-( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) -= rhs;
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    Quantity<M1+M2, L1+L2, T1+T2, EC1+EC2, TT1+TT2, AS1+AS2, LI1+LI2> 
+    constexpr Quantity<M1+M2, L1+L2, T1+T2, EC1+EC2, TT1+TT2, AS1+AS2, LI1+LI2> 
     operator*( const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
                const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         using ResultType = Quantity<M1+M2, L1+L2, T1+T2, EC1+EC2, TT1+TT2, AS1+AS2, LI1+LI2> ;
@@ -185,7 +186,7 @@ namespace SciQ {
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    Quantity<M1-M2, L1-L2, T1-T2, EC1-EC2, TT1-TT2, AS1-AS2, LI1-LI2>
+    constexpr Quantity<M1-M2, L1-L2, T1-T2, EC1-EC2, TT1-TT2, AS1-AS2, LI1-LI2>
     operator/( const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
                const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         using ResultType = Quantity<M1-M2, L1-L2, T1-T2, EC1-EC2, TT1-TT2, AS1-AS2, LI1-LI2> ;
@@ -193,7 +194,8 @@ namespace SciQ {
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator==( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+    constexpr bool 
+    operator==( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                      const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
@@ -201,40 +203,45 @@ namespace SciQ {
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator!=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
-                     const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+    constexpr bool 
+    operator!=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+                const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() != rhs.getValue());
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator<=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
-                     const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+    constexpr bool 
+    operator<=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+                const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() <= rhs.getValue());
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator>=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
-                     const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+    constexpr bool 
+    operator>=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+                const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() >= rhs.getValue());
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator<( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
-                    const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+    constexpr bool 
+    operator<( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+               const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() < rhs.getValue());
     }
     template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
              int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    bool operator>( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
-                    const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+    constexpr bool 
+    operator>( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+               const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
         static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() > rhs.getValue());
@@ -242,25 +249,25 @@ namespace SciQ {
 
     // Global operator overloading with typename Type
     template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<L, M, T, EC, TT, AS, LI> 
+    constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator*( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Type rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() * rhs );
     }
     template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<L, M, T, EC, TT, AS, LI> 
+    constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator*( const Type lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs * rhs.getValue() );
     }
     template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<L, M, T, EC, TT, AS, LI> 
+    constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator/( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Type rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() / rhs );
     }
     template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-    Quantity<-L, -M, -T, -EC, -TT, -AS, -LI> 
+    constexpr Quantity<-L, -M, -T, -EC, -TT, -AS, -LI> 
     operator/( const Type lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<-L, -M, -T, -EC, -TT, -AS, -LI>( lhs / rhs.getValue() );
