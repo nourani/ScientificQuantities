@@ -150,7 +150,7 @@ namespace SciQ {
          * getValue(). Overloading the double operator allows us to work with
          * the class seamlessly with other packages and environments.
          */
-        operator double() {
+        constexpr operator double() {
             return value;
         }
     private:
