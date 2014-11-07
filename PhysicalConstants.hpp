@@ -16,29 +16,6 @@
 #include "ScientificQuantities.hpp"
 
 namespace SciQ {
-    //
-    // Scaling prefixes (http://www.nist.gov/pml/wmd/metric/prefixes.cfm)
-    //
-    constexpr double yotta = 1.0e24 ;
-    constexpr double zetta = 1.0e21 ;
-    constexpr double exa = 1.0e18 ;
-    constexpr double peta = 1.0e15 ; 
-    constexpr double tera = 1.0e12 ; 
-    constexpr double giga = 1.0e9 ; 
-    constexpr double mega = 1.0e6 ; 
-    constexpr double kilo = 1.0e3 ; 
-    constexpr double hecto = 1.0e2 ; 
-    constexpr double deka = 1.0e1 ; 
-    constexpr double deci = 1.0e-1 ; 
-    constexpr double centi = 1.0e-2 ; 
-    constexpr double milli = 1.0e-3 ;
-    constexpr double micro = 1.0e-6 ; 
-    constexpr double nano = 1.0e-9 ;
-    constexpr double pico = 1.0e-12 ; 
-    constexpr double femto = 1.0e-15 ; 
-    constexpr double atto = 1.0e-18 ; 
-    constexpr double zepto = 1.0e-21 ; 
-    constexpr double yocto = 1.0e-24 ; 
 
     /*********************************************************************
      *                        Universal Constant                         *
@@ -80,9 +57,6 @@ namespace SciQ {
     constexpr Charge ElementaryCharge { q_elem } ;
     constexpr Charge q_elec { -ElementaryChargeValue } ;
     constexpr Charge ElectronCharge { q_elec } ;
-    constexpr Energy eV  { ElementaryChargeValue }  ;
-    constexpr Energy keV { kilo * ElementaryChargeValue } ;
-    constexpr Energy MeV { mega * ElementaryChargeValue } ;
 
     /*********************************************************************
      *                   Atomic and Nuclear Constants                    *

@@ -374,34 +374,179 @@ namespace SciQ {
     using Radiance               = decltype(RadiantIntensity()/Area()) ;
     using CatalyticConcentration = decltype(CatalyticActivity()/Volume()) ;
 
-    // These are handy for the Convert functions to convert between units
-    constexpr Length kilometer( 1e3 ) ;
-    constexpr Length kilometre( 1e3 );
-    constexpr Length meter( 1.0 ) ;
-    constexpr Length metre( 1.0 );
-    constexpr Length centimeter( 1e-2 ) ;
-    constexpr Length centimetre( 1e-2 );
-    constexpr Length millimeter( 1e-3 ) ;
-    constexpr Length milimetre( 1e-3 );
+    //
+    // Scaling prefixes (http://www.nist.gov/pml/wmd/metric/prefixes.cfm)
+    //
+    constexpr double yotta = 1.0e24 ;
+    constexpr double zetta = 1.0e21 ;
+    constexpr double exa = 1.0e18 ;
+    constexpr double peta = 1.0e15 ; 
+    constexpr double tera = 1.0e12 ; 
+    constexpr double giga = 1.0e9 ; 
+    constexpr double mega = 1.0e6 ; 
+    constexpr double kilo = 1.0e3 ; 
+    constexpr double hecto = 1.0e2 ; 
+    constexpr double deka = 1.0e1 ; 
+    constexpr double deci = 1.0e-1 ; 
+    constexpr double centi = 1.0e-2 ; 
+    constexpr double milli = 1.0e-3 ;
+    constexpr double micro = 1.0e-6 ; 
+    constexpr double nano = 1.0e-9 ;
+    constexpr double pico = 1.0e-12 ; 
+    constexpr double femto = 1.0e-15 ; 
+    constexpr double atto = 1.0e-18 ; 
+    constexpr double zepto = 1.0e-21 ; 
+    constexpr double yocto = 1.0e-24 ; 
 
-    constexpr Mass kilogram( 1.0 );
-    constexpr Mass gram( 1e-3 );
-    constexpr Mass tonne( 1e3 );
+    // 
+    // Specific units for various quantities. These are handy for the Convert
+    // functions to convert between units.
+    //
+    // See:
+    //
+    // - http://www.nist.gov/pml/wmd/pubs/upload/AppC-12-hb44-final.pdf
+    // - http://physics.nist.gov/cuu/Units/units.html
+    // - http://physics.nist.gov/cuu/Units/prefixes.html
+    // - http://physics.nist.gov/cuu/Units/outside.html
+    // - http://en.wikipedia.org/wiki/Unit_of_length
+    //
+    // Some of these units have names that are obtained from
+    // [BIPM](http://en.wikipedia.org/wiki/International_Bureau_of_Weights_and_Measures).
+    // For example, "metre" and "kilometre".
+    //
+    // -------------------------------------------------------------------------
+    // Various standard and common units for length.
+    // -------------------------------------------------------------------------
+    constexpr Length meter { 1.0 } ; 
+    constexpr Length metre { meter } ;
+    constexpr Length kilometer { kilo * meter } ;
+    constexpr Length kilometre { kilometer } ;
+    constexpr Length centimeter { centi * meter } ; 
+    constexpr Length centimetre { centimeter } ; 
+    constexpr Length millimeter { milli * meter } ; 
+    constexpr Length milimetre { millimeter } ; 
+    constexpr Length micron { micro * meter } ;
+    constexpr Length angstrom { 0.1 * nano * meter } ; 
+    constexpr Length inch { 2.54 * centimeter } ; 
+    constexpr Length line { inch / 12.0 } ; 
+    constexpr Length foot { 12 * inch } ; 
+    constexpr Length yard { 3 * foot } ; 
+    constexpr Length mile { 5280 * foot } ; 
+    constexpr Length league { 3 * mile } ; 
+    constexpr Length mil { inch / 1000.0 } ;
+    constexpr Length nautical_mile { 1852 * meter } ; 
+    constexpr Length fathom { 2 * yard } ; 
 
-    constexpr Area meter2( 1.0 ) ;
-    constexpr Area metre2( 1.0 );
-    constexpr Area kilometer2( 1.0e6 );
-    constexpr Area kilometre2( 1.0e6 );
+    // -------------------------------------------------------------------------
+    // Various standard and common units for mass.
+    //
+    // In addition to the links above, also see:
+    //
+    // - http://en.wikipedia.org/wiki/Mass#Units_of_mass
+    // -------------------------------------------------------------------------
+    constexpr Mass kilogram { 1.0 } ; 
+    constexpr Mass gram { kilogram / 1000.0 } ; 
+    constexpr Mass milligram { milli * gram } ; 
+    constexpr Mass tonne { 1.0e3 * kilogram } ; 
+    constexpr Mass metric_ton { tonne } ; 
+    constexpr Mass slug { 14.593903 * kilogram } ; 
+    constexpr Mass pound { 0.45359237 * kilogram } ; 
+    constexpr Mass carat { 200 * milligram } ; 
+    constexpr Mass grain { 64.79891 * milligram } ; 
+    constexpr Mass ounce_avdp { 437.5 * grain } ;
+    constexpr Mass ounce { ounce_avdp } ;
+    constexpr Mass ounce_troy { 480.0 * grain } ; 
+    constexpr Mass gross_ton { 2240 * pound } ; 
+    constexpr Mass long_ton { gross_ton } ; 
+    constexpr Mass short_ton { 2000 * pound } ; 
+    constexpr Mass net_ton { short_ton } ;
 
-    constexpr Time second( 1.0 );
-    constexpr Time minute( 60 );
-    constexpr Time hour( 60 * 24 );
-    constexpr Time day( 24 * 60 * 24 );
+    // -------------------------------------------------------------------------
+    // Various standard and common units for time.
+    //
+    // In addition to the links above, also see:
+    //
+    // - http://en.wikipedia.org/wiki/Unit_of_time
+    // -------------------------------------------------------------------------
+    constexpr Time second { 1.0 } ; 
+    constexpr Time minute { 60.0 * second } ; 
+    constexpr Time hour { 60.0 * minute } ; 
+    constexpr Time day { 24.0 * hour } ; 
+    constexpr Time week { 7.0 * day } ;
+    constexpr Time julian_year { 365.25 * day } ; 
+    constexpr Time year { julian_year } ; 
+    constexpr Time decade { 10.0 * year } ; 
+    constexpr Time century { 100.0 * year } ;
+    constexpr Time millennium { 1000.0 * year } ; 
+    constexpr Time yoctosecond { yocto * second } ; 
+    constexpr Time jiffy_phys { 3.0e-24 * second } ; 
+    constexpr Time zeptosecond { zepto * second } ; 
+    constexpr Time attosecond { atto * second } ; 
+    constexpr Time femtosecond { femto * second } ; 
+    constexpr Time svedberg { 1.0e-13 * second } ; 
+    constexpr Time picosecond { pico * second } ; 
+    constexpr Time nanosecond { nano * second } ; 
+    constexpr Time shake { 1.0e-8 * second } ; 
+    constexpr Time microsecond { micro * second } ; 
+    constexpr Time millisecond { milli * second } ; 
+    constexpr Time fortnight { 2 * week } ; 
+    constexpr Time leap_year { 366 * day } ; 
+    constexpr Time jubilee { 50 * year } ; 
+    constexpr Time epoch { 10 * mega * year } ; 
+    constexpr Time era { 100 * mega * year } ; 
+    constexpr Time eon { 500 * mega * year } ; 
 
+    // -------------------------------------------------------------------------
+    // Various standard and common units for current.
+    // -------------------------------------------------------------------------
+    constexpr Current ampere { 1.0 } ; 
+    constexpr Current milliamp { milli * ampere } ; 
+    constexpr Current microamp { micro * ampere } ; 
+    constexpr Current nanoamp  { nano * ampere } ; 
+    constexpr Current picoamp  { pico * ampere } ; 
+
+    // -------------------------------------------------------------------------
+    // Various standard and common units for temperature.
+    // -------------------------------------------------------------------------
     constexpr Temperature celcius( 273.15 );
     constexpr Temperature kelvin( 1.0 );
     constexpr Temperature fahrenheit( (1.0-32)*5/9+273.15 );
 
+    // -------------------------------------------------------------------------
+    // Various standard and common units for substance
+    // -------------------------------------------------------------------------
+    constexpr Substance mole { 1.0 } ;
+
+    //
+    // -------------------------------------------------------------------------
+    // Various standard and common units for luminous
+    // -------------------------------------------------------------------------
+    constexpr Luminous candela { 1.0 } ;
+
+    // -------------------------------------------------------------------------
+    // Various standard and common units for area.
+    //
+    // In addition to the links above, also see:
+    //
+    // - http://en.wikipedia.org/wiki/Area
+    // -------------------------------------------------------------------------
+    constexpr Area meter2 { meter * meter } ;
+    constexpr Area metre2 { meter2 } ; 
+    constexpr Area square_meter { meter2 } ;
+    constexpr Area kilometer2 { kilometer * kilometer } ; 
+    constexpr Area kilometre2 { kilometer2 } ; 
+    constexpr Area square_kilometer { kilometer2 } ; 
+    constexpr Area yard2 { yard * yard } ;
+    constexpr Area square_yard { yard2 } ; 
+    constexpr Area mile2 { mile * mile } ; 
+    constexpr Area square_mile { mile2 } ; 
+    constexpr Area hectare { 10000 * square_meter } ; 
+    constexpr Area acre { 4840 * square_yard } ; 
+    constexpr Area barn { 1.0e-28 * square_meter } ;
+
+    // -------------------------------------------------------------------------
+    // Various standard and common units for angle
+    // -------------------------------------------------------------------------
     constexpr Angle radian( 1.0 );
     constexpr Angle degree( M_PI / 180. );
     constexpr Angle gradian( 2 * M_PI / 400. ); // For c.lees!
@@ -409,10 +554,50 @@ namespace SciQ {
     constexpr Angle angleminute( M_PI/10800 );
     constexpr Angle anglesecond( M_PI/648000 );
 
-    constexpr Volume litre( 0.001 );
+    // -------------------------------------------------------------------------
+    // Various standard and common units for volume
+    // -------------------------------------------------------------------------
+    constexpr Volume meter3 { meter * meter * meter } ; 
+    constexpr Volume cubic_meter { meter3 } ;
+    constexpr Volume centimeter3 { centimeter * centimeter * centimeter } ; 
+    constexpr Volume cubic_centimeter { centimeter3 } ;
+    constexpr Volume inch3 { inch * inch * inch } ; 
+    constexpr Volume cubic_inch { inch3 } ;
+    constexpr Volume litre { 0.001 * cubic_meter } ;
+    constexpr Volume millilitre { milli * litre } ; 
+    constexpr Volume gallon { 3.785411784 * litre } ;
+    constexpr Volume liquid_quart { 0.25 * gallon } ; 
+    constexpr Volume liquid_pint { 0.5 * liquid_quart } ;
+    constexpr Volume gill { 0.25 * liquid_pint } ; 
+    constexpr Volume fluid_ounce { 0.0625 * liquid_pint } ; 
+    constexpr Volume fluid_dram { 0.0078125 * liquid_pint } ; 
+    constexpr Volume cup { 8 * fluid_ounce } ;
+    constexpr Volume tablespoon { 15 * millilitre } ; 
+    constexpr Volume teaspoon { 5 * millilitre } ; 
+    constexpr Volume minim { 0.0001302083 * liquid_pint } ;
+    constexpr Volume bushel { 2150.2 * cubic_inch } ; 
+    constexpr Volume peck { 0.25 * bushel } ; 
+    constexpr Volume dry_quart { 0.125 * peck } ; 
+    constexpr Volume dry_pint { 0.5 * dry_quart } ;
+    
+    // -------------------------------------------------------------------------
+    // Various standard and common units for pressure
+    // -------------------------------------------------------------------------
+    constexpr Pressure pascal { 1.0 } ; 
+    constexpr Pressure bar { 1.0e5 * pascal } ; 
+    constexpr Pressure atm { 1.01325e5 * pascal } ; 
+    constexpr Pressure torr { 133.3224 * pascal } ; 
+    constexpr Pressure psi { 6.8948e3 * pascal } ;
 
-    constexpr Pressure bar( 10e5 );
-    constexpr Pressure atm( 101325 );
+    // -------------------------------------------------------------------------
+    // Various standard and common units for energy
+    // -------------------------------------------------------------------------
+    constexpr Energy joule { 1.0 } ;
+    constexpr Energy cal { 4.184 * joule } ;
+    constexpr Energy erg { 1.0e-7 * joule } ; 
+    constexpr Energy eV  { 1.602176565e-19 * joule } ;
+    constexpr Energy keV { kilo * eV } ;
+    constexpr Energy MeV { mega * eV } ; 
 
     // C++11 literals
     // NOTE: it is recommended to create own literals starting with _ as literals witout _
