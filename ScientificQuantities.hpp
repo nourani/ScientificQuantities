@@ -295,12 +295,25 @@ namespace SciQ {
     using Luminous          = Quantity<0,0,0,0,0,0,1>;
 
     // Additional units for our purpose
-    using Area              = decltype(Length()*Length()) ;
-    using Volume            = decltype(Area()*Length()) ;
-    using Speed             = decltype(Length()/Time()) ;
-    using Acceleration      = decltype(Speed()/Time()) ;
+    //
+    // (see Table 2 at http://physics.nist.gov/cuu/Units/units.html)
+    //
+    using Area                   = decltype(Length()*Length()) ;
+    using Volume                 = decltype(Area()*Length()) ;
+    using Speed                  = decltype(Length()/Time()) ;
+    using Acceleration           = decltype(Speed()/Time()) ;
+    using WaveNumber             = decltype(1.0/Length()) ; 
+    using MassDensity            = decltype(Mass()/Volume()) ;
+    using SpecificVolume         = decltype(Volume()/Mass()) ; 
+    using CurrentDensity         = decltype(Current()/Area()) ; 
+    using MagneticFieldStrength  = decltype(Current()/Length()) ; 
+    using SubstanceConcentration = decltype(Substance()/Volume()) ;
+    using Luminance              = decltype(Luminous()/Area()) ; 
+    using MassFraction           = decltype(Mass()/Mass()) ;
 
     // Derived SI units
+    //
+    // (see Table 3 at http://physics.nist.gov/cuu/Units/units.html)
     // TODO: How can we differentiate between
     //      - Angle vs SolidAngle and
     //      - Luminous vs Luminous Flux and
