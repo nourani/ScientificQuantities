@@ -22,11 +22,15 @@ add_executable(SQTest
 	SQTest.cpp
 )
 
+add_executable(constexpr_test
+    constexpr_test.cpp
+)
+
 
 ###############################################################################
 ## 								Install
 # Binaries and libs
-install(TARGETS SQTest
+install(TARGETS SQTest constexpr_test
 	RUNTIME DESTINATION bin
 #	LIBRARY DESTINATION lib
 #	ARCHIVE DESTINATION lib
