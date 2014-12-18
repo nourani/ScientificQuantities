@@ -22,6 +22,10 @@ add_executable(SQTest
 	SQTest.cpp
 )
 
+add_executable(SQ2Test
+	SQ2Test.cpp
+)
+
 add_executable(constexpr_test
     constexpr_test.cpp
 )

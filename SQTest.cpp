@@ -7,6 +7,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 
 #include "ScientificQuantities.hpp"
 #include "PhysicalConstants.hpp"
@@ -142,8 +143,8 @@ int main( int argc, char ** argv ) {
          << " we would be traveling at " << a2 * t1 << endl;
 
     Frequency f1 = 1. / t1;
-    cout << "\n\tIf the duration between two flashes is " << t1 << " then the light is flashing at "
-         << f1 << endl;
+    cout << "\n\tIf the duration between two flashes is " << t1 
+    	 << " then the light is flashing at " << f1 << endl;
 
     Area a1 = l1 * l1;
     Volume v1 = a1 * l1;
@@ -151,7 +152,8 @@ int main( int argc, char ** argv ) {
          << endl;
 
     Angle a3 = M_PI*radian;
-    a3 = 3. * a3;
+    double foo = 3.;
+    a3 = foo * a3;
     Angle a4 = 90_deg + 2_rad;
     cout << "\n\t" << t1 << " in minutes = " << t1.in( minute ) << endl;
     cout << "\n\t" << l1 << " in km = " << l1.in( kilometre ) << endl;
@@ -159,8 +161,24 @@ int main( int argc, char ** argv ) {
          << endl;
     cout << "\n\t" << a4 << " in grad: " << a4.in( gradian ) << " (c.lees!!!)" << endl;
 
-    double l = l1;
-    cout << "\n\tAssigning a length (" << l1 << ") to a double: " << l << endl;
+	// The radius of earth if a black hole
+	//cout << "c = " << SpeedOfLight.toString() << endl;
+	//cout << "G = " << GravitationalConstant.toString() << endl;
+	//cout << "M = " << MassOfEarth.toString() << endl;
+	Length SchwarzschildLength = ((2*GravitationalConstant*MassOfEarth) / (SpeedOfLight*SpeedOfLight) );	
+	cout << std::setprecision(20) << "\n\tSchwarzchild length of the earth (if a black hole) = " << SchwarzschildLength.in(PlanckLength) << " (Planck length) = " << SchwarzschildLength << std::setprecision(6) << endl;
 
+
+	// Sqrt of an unit
+	cout << "\n\n\tPerforming mathematical functions such as pow and sqrt:" << endl;
+	cout << "\n\tlength=" << l1 << ", sqrt(length)=" << sqrt(l1) << endl;
+	cout << "\tG=" << GravitationalConstant << ", sqrt(G)=" << sqrt(GravitationalConstant) << endl;
+	// power of a unit
+	cout << "\n\tlength=" << l1 << ", pow<2>(length)=" << pow<2>(l1) << endl;
+	cout << "\tG=" << GravitationalConstant << ", pow<2>(G)=" << pow<2>(GravitationalConstant) << endl;
+	// power of a sqrt of aunit
+	cout << "\n\tG=" << GravitationalConstant << ", pow<2>( sqrt(G) )=" << pow<2>( sqrt(GravitationalConstant) ) << endl;
+	
+	
     return 0;
 }

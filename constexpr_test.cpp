@@ -27,14 +27,7 @@ int main(int argc, char *argv[])
         constexpr auto foo = Length(1.0) ; 
         constexpr auto bar = foo.in(kilometer) ;
     }
-    //
-    // Quantity::compType()
-    //
-    {
-        constexpr auto foo = Length(1.0) ; 
-        constexpr auto bar = kilometer ; 
-        constexpr auto zoo = foo.compType(bar) ;
-    }
+    
     //
     // Quantity::getValue()
     //
