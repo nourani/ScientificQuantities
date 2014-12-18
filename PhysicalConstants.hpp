@@ -75,6 +75,16 @@ namespace SciQ {
      * (http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Physico-chemical.x=110&Physico-chemical.y=17) *
      *********************************************************************/
 
+	constexpr Length PlanckLength = 1.61619997e-35_m;
+	constexpr Mass PlanckMass = 2.1765113e-8_kg;
+	constexpr Time PlanckTime = 5.3910632e-44_s;
+	constexpr Charge PlanckCharge = 1.87554595641e-18_C;
+	constexpr Temperature PlanckTemperature = 1.41683385e+32_K;
+	
+	constexpr Speed SpeedOfLight = PlanckLength / PlanckTime;
+	constexpr GravitationalConstantUnit GravitationalConstant = PlanckLength*PlanckLength*PlanckLength/PlanckMass/PlanckTime/PlanckTime;
+	
+	constexpr Mass MassOfEarth = 5.97219e+24_kg;
     /*********************************************************************
      *                          Adopted Values                           *
      * (http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Adopted+values.x=99&Adopted+values.y=10) *

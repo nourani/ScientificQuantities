@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <stdexcept>
 #include <array>
+#include <ratio>
 
 namespace SciQ {
     /**
@@ -62,7 +63,7 @@ namespace SciQ {
      * - [Fixing it once and for all: Enforcing units of measure in C++11](http://grahampentheny.com/archives/106)
      *
      */
-    template<int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<class L, class M, class T, class EC, class TT, class AS, class LI>
     class Quantity {
     public:
         /**
@@ -72,7 +73,7 @@ namespace SciQ {
 
         /**
          * The fundamental unit corresponding to the current quantity. 
-         */
+         */	
         using FundamentalUnitType = FundamentalUnit<Type> ;
 
         /**
@@ -108,19 +109,6 @@ namespace SciQ {
         }
 
         /**
-         * Check if two different instantiations of this template correspond
-         * to compatible physical values. In other works, all base unit 
-         * exponents for both instantiations are indentical.
-         *
-         * \todo Not sure if we need this.
-         */
-        template<int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-        constexpr bool 
-        compType( const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-            return (L==L2 && M==M2 && T==T2 && EC==EC2 && TT==TT2 && AS==AS2 && LI==LI2);
-        }
-
-        /**
          * Get the value of the current quantity in its fundamental SI unit.
          */
         constexpr double getValue() {
@@ -153,146 +141,211 @@ namespace SciQ {
         constexpr operator double() {
             return value;
         }
+        
+        constexpr std::string toString() {
+        	char str[128];
+        	sprintf( str, "%f: L=%ld/%ld, M=%ld/%ld, T=%ld/%ld, EC=%ld/%ld, TT=%ld/%ld, AS=%ld/%ld, LI=%ld/%ld", 
+        		value, L::num, L::den, M::num, M::den, T::num, T::den, EC::num, EC::den, TT::num, TT::den, AS::num, AS::den, LI::num, LI::den );
+        	return (std::string)str;
+        }
     private:
         /**
          * Value of this quantity in its fundamental SI units.
          */
         double value;
     };
-
+    
     //
     // Arithmetic operators for Quantity<> instances.
     //
-    template<int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<class L, class M, class T, class EC, class TT, class AS, class LI>
     Quantity<L, M, T, EC, TT, AS, LI> 
     operator+( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) += rhs;
     }
 
-    template<int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<class L, class M, class T, class EC, class TT, class AS, class LI>
     Quantity<L, M, T, EC, TT, AS, LI> 
     operator-( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs ) -= rhs;
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    constexpr Quantity<M1+M2, L1+L2, T1+T2, EC1+EC2, TT1+TT2, AS1+AS2, LI1+LI2> 
-    operator*( const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
-               const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        using ResultType = Quantity<M1+M2, L1+L2, T1+T2, EC1+EC2, TT1+TT2, AS1+AS2, LI1+LI2> ;
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
+    constexpr Quantity<std::ratio_add<L1,L2>, std::ratio_add<M1,M2>, std::ratio_add<T1,T2>, std::ratio_add<EC1,EC2>, std::ratio_add<TT1,TT2>, std::ratio_add<AS1,AS2>, std::ratio_add<LI1,LI2>> 
+    operator*( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+               const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+        using ResultType = Quantity<std::ratio_add<L1,L2>, std::ratio_add<M1,M2>, std::ratio_add<T1,T2>, std::ratio_add<EC1,EC2>, std::ratio_add<TT1,TT2>, std::ratio_add<AS1,AS2>, std::ratio_add<LI1,LI2>> ;
         return ResultType( lhs.getValue() * rhs.getValue() );
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
-    constexpr Quantity<M1-M2, L1-L2, T1-T2, EC1-EC2, TT1-TT2, AS1-AS2, LI1-LI2>
-    operator/( const Quantity<M1, L1, T1, EC1, TT1, AS1, LI1>& lhs,
-               const Quantity<M2, L2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        using ResultType = Quantity<M1-M2, L1-L2, T1-T2, EC1-EC2, TT1-TT2, AS1-AS2, LI1-LI2> ;
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
+    constexpr Quantity<std::ratio_subtract<L1,L2>, std::ratio_subtract<M1,M2>, std::ratio_subtract<T1,T2>, std::ratio_subtract<EC1,EC2>, std::ratio_subtract<TT1,TT2>, std::ratio_subtract<AS1,AS2>, std::ratio_subtract<LI1,LI2>>
+    operator/( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
+               const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
+        using ResultType = Quantity<std::ratio_subtract<L1,L2>, std::ratio_subtract<M1,M2>, std::ratio_subtract<T1,T2>, std::ratio_subtract<EC1,EC2>, std::ratio_subtract<TT1,TT2>, std::ratio_subtract<AS1,AS2>, std::ratio_subtract<LI1,LI2>> ;
         return ResultType( lhs.getValue() / rhs.getValue() );
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator==( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                      const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value,
                        "Type of values being compared must be same.");
         return (lhs.getValue() == rhs.getValue());
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator!=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                 const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value, 
                        "Type of values being compared must be same.");
         return (lhs.getValue() != rhs.getValue());
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator<=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                 const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value,
                        "Type of values being compared must be same.");
         return (lhs.getValue() <= rhs.getValue());
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator>=( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                 const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value,
                        "Type of values being compared must be same.");
         return (lhs.getValue() >= rhs.getValue());
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator<( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value,
                        "Type of values being compared must be same.");
         return (lhs.getValue() < rhs.getValue());
     }
 
-    template<int L1, int M1, int T1, int EC1, int TT1, int AS1, int LI1, 
-             int L2, int M2, int T2, int EC2, int TT2, int AS2, int LI2>
+    template<class L1, class M1, class T1, class EC1, class TT1, class AS1, class LI1, 
+             class L2, class M2, class T2, class EC2, class TT2, class AS2, class LI2>
     constexpr bool 
     operator>( const Quantity<L1, M1, T1, EC1, TT1, AS1, LI1>& lhs,
                const Quantity<L2, M2, T2, EC2, TT2, AS2, LI2>& rhs ) {
-        static_assert( L1 == L2 && M1 == M2 && T1 == T2 && EC1 == EC2 && TT1 == TT2 && AS1 == AS2 && LI1 == LI2, 
+        static_assert( std::ratio_equal<M1,M2>::value && 
+        				std::ratio_equal<L1,L2>::value && 
+        				std::ratio_equal<T1,T2>::value && 
+        				std::ratio_equal<EC1,EC2>::value && 
+        				std::ratio_equal<TT1,TT2>::value && 
+        				std::ratio_equal<AS1,AS2>::value && 
+        				std::ratio_equal<LI1,LI2>::value,
                        "Type of values being compared must be same.");
         return (lhs.getValue() > rhs.getValue());
     }
 
     // Global operator overloading with typename Type
-    template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<typename Type, class L, class M, class T, class EC, class TT, class AS, class LI>
     constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator*( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Type rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() * rhs );
     }
 
-    template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<typename Type, class L, class M, class T, class EC, class TT, class AS, class LI>
     constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator*( const Type lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs * rhs.getValue() );
     }
 
-    template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
+    template<typename Type, class L, class M, class T, class EC, class TT, class AS, class LI>
     constexpr Quantity<L, M, T, EC, TT, AS, LI> 
     operator/( const Quantity<L, M, T, EC, TT, AS, LI>& lhs,
                const Type rhs ) {
         return Quantity<L, M, T, EC, TT, AS, LI>( lhs.getValue() / rhs );
     }
 
-    template<typename Type, int L, int M, int T, int EC, int TT, int AS, int LI>
-    constexpr Quantity<-L, -M, -T, -EC, -TT, -AS, -LI> 
+    template<typename Type, class L, class M, class T, class EC, class TT, class AS, class LI>
+    constexpr Quantity<std::ratio<-L::num>, std::ratio<-M::num>, std::ratio<-T::num>, std::ratio<-EC::num>, std::ratio<-TT::num>, std::ratio<-AS::num>, std::ratio<-LI::num> > 
     operator/( const Type lhs,
                const Quantity<L, M, T, EC, TT, AS, LI>& rhs ) {
-        return Quantity<-L, -M, -T, -EC, -TT, -AS, -LI>( lhs / rhs.getValue() );
+        return Quantity<std::ratio<-L::num>, std::ratio<-M::num>, std::ratio<-T::num>, std::ratio<-EC::num>, std::ratio<-TT::num>, std::ratio<-AS::num>, std::ratio<-LI::num> >( lhs / rhs.getValue() );
+    }
+
+	// Mathematical operations
+	// sqrt
+	typedef std::ratio<2,1> two;
+    template<class L, class M, class T, class EC, class TT, class AS, class LI>
+    constexpr Quantity< std::ratio_divide<L,std::ratio<2> >, std::ratio_divide<M,std::ratio<2> >, std::ratio_divide<T,std::ratio<2> >, std::ratio_divide<EC,std::ratio<2> >, std::ratio_divide<TT,std::ratio<2> >, std::ratio_divide<AS,std::ratio<2> >, std::ratio_divide<LI,std::ratio<2> > >
+    sqrt( const Quantity<L, M, T, EC, TT, AS, LI>& lhs ) {
+		
+		using ResultType = Quantity< std::ratio_divide<L,std::ratio<2> >, std::ratio_divide<M,std::ratio<2> >, std::ratio_divide<T,std::ratio<2> >, std::ratio_divide<EC,std::ratio<2> >, std::ratio_divide<TT,std::ratio<2> >, std::ratio_divide<AS,std::ratio<2> >, std::ratio_divide<LI,std::ratio<2> > >;
+
+    	return ResultType( std::sqrt(lhs.getValue()) );
+    }
+    // pow
+    // TODO: is there away around than using template based power so we are consistent with the std::pow??
+    template<int power, class L, class M, class T, class EC, class TT, class AS, class LI>
+    constexpr Quantity< std::ratio_multiply<L,std::ratio<power> >, std::ratio_multiply<M,std::ratio<power> >, std::ratio_multiply<T,std::ratio<power> >, std::ratio_multiply<EC,std::ratio<power> >, std::ratio_multiply<TT,std::ratio<power> >, std::ratio_multiply<AS,std::ratio<power> >, std::ratio_multiply<LI,std::ratio<power> > >
+    pow( const Quantity<L, M, T, EC, TT, AS, LI>& lhs ) {
+		
+		using ResultType = Quantity< std::ratio_multiply<L,std::ratio<power> >, std::ratio_multiply<M,std::ratio<power> >, std::ratio_multiply<T,std::ratio<power> >, std::ratio_multiply<EC,std::ratio<power> >, std::ratio_multiply<TT,std::ratio<power> >, std::ratio_multiply<AS,std::ratio<power> >, std::ratio_multiply<LI,std::ratio<power> > >;
+
+    	return ResultType( std::pow(lhs.getValue(), (double)power) );
     }
 
     // C++11 Physical quantity classes
     // Base units of the SI system
-    using Length            = Quantity<1,0,0,0,0,0,0>;
-    using Mass              = Quantity<0,1,0,0,0,0,0>;
-    using Time              = Quantity<0,0,1,0,0,0,0>;
-    using Current           = Quantity<0,0,0,1,0,0,0>;
-    using Temperature       = Quantity<0,0,0,0,1,0,0>;
-    using Substance         = Quantity<0,0,0,0,0,1,0>;
-    using Luminous          = Quantity<0,0,0,0,0,0,1>;
+    using Length            = Quantity<std::ratio<1>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0> >;
+    using Mass              = Quantity<std::ratio<0>,std::ratio<1>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0> >;
+    using Time              = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<1>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0> >;
+    using Current           = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<1>,std::ratio<0>,std::ratio<0>,std::ratio<0> >;
+    using Temperature       = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<1>,std::ratio<0>,std::ratio<0> >;
+    using Substance         = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<1>,std::ratio<0> >;
+    using Luminous          = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<1> >;
 
     // Additional units for our purpose
     //
@@ -318,8 +371,8 @@ namespace SciQ {
     //      - Angle vs SolidAngle and
     //      - Luminous vs Luminous Flux and
     //      - Frequency vs Radioactivity??
-    using Angle             = Quantity<0,0,0,0,0,0,0>;
-    using SolidAngle        = Quantity<0,0,0,0,0,0,0>;
+    using Angle             = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>>;
+    using SolidAngle        = Quantity<std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>,std::ratio<0>>;
     using Frequency         = decltype(1/Time()) ;
     using Force             = decltype(Mass()*Acceleration()) ;
     using Pressure          = decltype(Force()/Area()) ;
@@ -374,6 +427,10 @@ namespace SciQ {
     using Radiance               = decltype(RadiantIntensity()/Area()) ;
     using CatalyticConcentration = decltype(CatalyticActivity()/Volume()) ;
 
+
+	// Other stuff
+	using GravitationalConstantUnit = decltype(Volume()/Mass()/Time()/Time());
+	
     //
     // Scaling prefixes (http://www.nist.gov/pml/wmd/metric/prefixes.cfm)
     //
@@ -718,7 +775,7 @@ namespace SciQ {
         static const bool value = sizeof(check<FunitType>(0)) == sizeof(char) ;
     } ;
 
-    template<int L, int M, int T, int EC, int TT, int AS, int LI, 
+    template<class L, class M, class T, class EC, class TT, class AS, class LI, 
     typename std::enable_if<HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
     {
@@ -883,14 +940,14 @@ namespace SciQ {
         using NameType = const char* ;
         static constexpr NameType Name = "lx" ;
     } ;
-
+#if 1
     template<>
     struct FundamentalUnit<AbsorbedDose>
     {
         using NameType = const char* ;
         static constexpr NameType Name = "Gy" ;
     } ;
-
+#endif
     template<>
     struct FundamentalUnit<CatalyticActivity>
     {
@@ -1024,7 +1081,7 @@ namespace SciQ {
         static constexpr NameType Name = "m/s^2" ;
     } ;
 
-    template<int L, int M, int T, int EC, int TT, int AS, int LI, 
+    template<class L, class M, class T, class EC, class TT, class AS, class LI, 
     typename std::enable_if<not HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
     {
@@ -1037,20 +1094,26 @@ namespace SciQ {
             FundamentalUnit<Substance>::Name,  
             FundamentalUnit<Luminous>::Name  
         } ;
-        static const std::array<int, NUM_BASE_UNITS> exponents { 
-            L, M, T, EC, TT, AS, LI
+        // Since 
+        static const std::array<int, NUM_BASE_UNITS*2> exponents { 
+            L::num, L::den, M::num, M::den, T::num, T::den, EC::num, EC::den, TT::num, TT::den, AS::num, AS::den, LI::num, LI::den
         } ;
         os << q.getValue() ;
-        for(int i=0; i<exponents.size(); ++i) {
+        for(int i=0; i<exponents.size(); i+=2) {
             if (0 == exponents[i]) {
                 continue ;
             } 
-            if (1 == exponents[i]) {
+            if (1 == exponents[i] && 1 == exponents[i+1]) {
                 os << " " << base_units[i] ; 
             } else {
                 os << " " << base_units[i] << "^" << exponents[i] ;
             }
+            if (1 != exponents[i+1]) {
+            	os << "/" << exponents[i+1];
+            }
         }
+        
+        
         return os ; 
     }
 
