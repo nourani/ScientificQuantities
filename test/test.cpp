@@ -15,6 +15,7 @@
 using namespace SciQ;
 using namespace std;
 
+
 int main( int argc, char ** argv ) {
 
     cout << "The base SI units are: " << endl
@@ -161,24 +162,35 @@ int main( int argc, char ** argv ) {
          << endl;
     cout << "\n\t" << a4 << " in grad: " << a4.in( gradian ) << " (c.lees!!!)" << endl;
 
-	// The radius of earth if a black hole
-	//cout << "c = " << SpeedOfLight.toString() << endl;
-	//cout << "G = " << GravitationalConstant.toString() << endl;
-	//cout << "M = " << MassOfEarth.toString() << endl;
-	Length SchwarzschildLength = ((2*GravitationalConstant*MassOfEarth) / (SpeedOfLight*SpeedOfLight) );	
-	cout << std::setprecision(20) << "\n\tSchwarzchild length of the earth (if a black hole) = " << SchwarzschildLength.in(PlanckLength) << " (Planck length) = " << SchwarzschildLength << std::setprecision(6) << endl;
+    // The radius of earth if a black hole
+    //cout << "c = " << SpeedOfLight.toString() << endl;
+    //cout << "G = " << GravitationalConstant.toString() << endl;
+    //cout << "M = " << MassOfEarth.toString() << endl;
+    Length SchwarzschildLength = ((2*GravitationalConstant*MassOfEarth) / (SpeedOfLight*SpeedOfLight) );
+    cout << std::setprecision(20) << "\n\tSchwarzchild length of the earth (if a black hole) = " << SchwarzschildLength.in(PlanckLength) << " (Planck length) = " << SchwarzschildLength << std::setprecision(6) << endl;
 
 
-	// Sqrt of an unit
-	cout << "\n\n\tPerforming mathematical functions such as pow and sqrt:" << endl;
-	cout << "\n\tlength=" << l1 << ", sqrt(length)=" << sqrt(l1) << endl;
-	cout << "\tG=" << GravitationalConstant << ", sqrt(G)=" << sqrt(GravitationalConstant) << endl;
-	// power of a unit
-	cout << "\n\tlength=" << l1 << ", pow<2>(length)=" << pow<2>(l1) << endl;
-	cout << "\tG=" << GravitationalConstant << ", pow<2>(G)=" << pow<2>(GravitationalConstant) << endl;
-	// power of a sqrt of aunit
-	cout << "\n\tG=" << GravitationalConstant << ", pow<2>( sqrt(G) )=" << pow<2>( sqrt(GravitationalConstant) ) << endl;
-	
+    // Sqrt of an unit
+    cout << "\n\n\tPerforming mathematical functions such as pow and sqrt:" << endl;
+    cout << "\n\tlength=" << l1 << ", sqrt(length)=" << sqrt(l1) << endl;
+    cout << "\tG=" << GravitationalConstant << ", sqrt(G)=" << sqrt(GravitationalConstant) << endl;
+    // power of a unit
+    cout << "\n\tlength=" << l1 << ", pow<2>(length)=" << pow<2>(l1) << endl;
+    cout << "\tG=" << GravitationalConstant << ", pow<2>(G)=" << pow<2>(GravitationalConstant) << endl;
+    // power of a sqrt of aunit
+    cout << "\n\tG=" << GravitationalConstant << ", pow<2>( sqrt(G) )=" << pow<2>( sqrt(GravitationalConstant) ) << endl;
+
+    // Conversion from a string.
+    // This can be useful for parsing configuration files
+    string val_unit_str = "-54 C/m^2";
+    double val;
+    if( ! from_string( val_unit_str, &val ) ) {
+      cout << "parse failed\n";
+    }
+    cout << "\n\nParsing string: \"" << val_unit_str << "\"\n"
+        << "\tunit is accepted\n"
+        << "\tvalue = " << val << endl;
+
 	
     return 0;
 }
