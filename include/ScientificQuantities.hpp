@@ -13,12 +13,16 @@
 #ifndef SCIENTIFICQUANTITIES_HPP_
 #define SCIENTIFICQUANTITIES_HPP_
 
-#include <ostream>
+#include <sstream>
+#include <iostream>
 #include <cmath>
 #include <assert.h>
 #include <stdexcept>
 #include <array>
 #include <ratio>
+#include <vector>
+#include <memory>
+#include <cstring>
 
 namespace SciQ {
     /**
@@ -45,6 +49,10 @@ namespace SciQ {
     struct FundamentalUnit 
     {} ;
 
+    class IQuantity {
+      // Interface class
+    };
+
     /**
      * Representation of a physical/scientific quantity using a combination of
      * seven base quantities: length (L), mass (M), temperature (T), electric
@@ -53,7 +61,7 @@ namespace SciQ {
      * [this](http://physics.nist.gov/cuu/Units/units.html) page for more
      * information. 
      *
-     * \todo Can we use a string literal? We can use this to define the unit as
+     * TODO Can we use a string literal? We can use this to define the unit as
      * well as coping with quantities with similar base units
      * 
      * \see 
@@ -64,7 +72,7 @@ namespace SciQ {
      *
      */
     template<class L, class M, class T, class EC, class TT, class AS, class LI>
-    class Quantity {
+    class Quantity : public IQuantity {
     public:
         /**
          * The type of the current Quantity. 
@@ -114,7 +122,28 @@ namespace SciQ {
         constexpr double getValue() {
             return value;
         }
+        /**
+         * Returns the type of the unit as a string.
+         * @return
+         */
+        constexpr std::string getUnitStr()
+        {
+            std::ostringstream os;
+            os << Quantity<L, M, T, EC, TT, AS, LI>::FundamentalUnitType::Name;
+            return os.str();
+        }
+        /**
+         * Compares if the unit matches the string.
+         * @param type_given String containing the unit
+         * @return True if the string matches the unit
+         */
+        constexpr bool isSameUnit( const std::string unit_str ) {
 
+          if( getUnitStr().compare(unit_str) == 0) {
+            return true;
+          }
+          return false;
+        }
         /**
          * Add the specified quantity, \c rhs, to this quantity. The value of
          * this quantity is updated.
@@ -657,7 +686,7 @@ namespace SciQ {
     constexpr Energy MeV { mega * eV } ; 
 
     // C++11 literals
-    // NOTE: it is recommended to create own literals starting with _ as literals witout _
+    // NOTE: it is recommended to create own literals starting with _ as literals without _
     //              may be defined by the system in the future and ours will be ignored then!
     constexpr Length operator"" _km(long double x) {return Length(x*1e3);}
     constexpr Length operator"" _km(unsigned long long x) {return Length(x*1e3);}
@@ -775,7 +804,7 @@ namespace SciQ {
         static const bool value = sizeof(check<FunitType>(0)) == sizeof(char) ;
     } ;
 
-    template<class L, class M, class T, class EC, class TT, class AS, class LI, 
+    template<class L, class M, class T, class EC, class TT, class AS, class LI,
     typename std::enable_if<HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
     {
@@ -959,7 +988,7 @@ namespace SciQ {
     struct FundamentalUnit<DynamicViscosity>
     {
         using NameType = const char* ;
-        static constexpr NameType Name = "Pa s" ;
+        static constexpr NameType Name = "Pa*s" ;
     } ;
 
     template<>
@@ -987,14 +1016,14 @@ namespace SciQ {
     struct FundamentalUnit<SpecificEntropy>
     {
         using NameType = const char* ;
-        static constexpr NameType Name = "J/(kg K)" ;
+        static constexpr NameType Name = "J/(kg*K)" ;
     } ;
 
     template<>
     struct FundamentalUnit<ThermalConductivity>
     {
         using NameType = const char* ;
-        static constexpr NameType Name = "W/(m K)" ;
+        static constexpr NameType Name = "W/(m*K)" ;
     } ;
 
     template<>
@@ -1043,7 +1072,7 @@ namespace SciQ {
     struct FundamentalUnit<MolarEntropy>
     {
         using NameType = const char* ;
-        static constexpr NameType Name = "J/(mol K)" ;
+        static constexpr NameType Name = "J/(mol*K)" ;
     } ;
 
     template<>
@@ -1081,6 +1110,8 @@ namespace SciQ {
         static constexpr NameType Name = "m/s^2" ;
     } ;
 
+    static const int NUM_UNITS = 42;
+
     template<class L, class M, class T, class EC, class TT, class AS, class LI, 
     typename std::enable_if<not HasFundamentalUnit<Quantity<L, M, T, EC, TT, AS, LI>>::value>::type* = nullptr>
     std::ostream& operator<<( std::ostream& os, const Quantity<L, M, T, EC, TT, AS, LI>& q ) 
@@ -1115,6 +1146,94 @@ namespace SciQ {
         
         
         return os ; 
+    }
+
+    /**
+     * Given a string with a value and a units create the appropriate Quantity / scale the value and return the value
+     * TODO: can't deal with scaling. I.e. cannot parse '1 km' as '1000 m'!
+     * @param s String containing the value and unit following the same output as the "<<operator" above
+     * @return The value of in SI units
+     */
+
+    bool from_string( const std::string input_val_unit, double * value ) {
+      // Supported units
+      std::vector<std::string> UNITS = {
+                  FundamentalUnit<Length>::Name,
+                  FundamentalUnit<Mass>::Name,
+                  FundamentalUnit<Time>::Name,
+                  FundamentalUnit<Current>::Name,
+                  FundamentalUnit<Temperature>::Name,
+                  FundamentalUnit<Substance>::Name,
+                  FundamentalUnit<Luminous>::Name,
+                  FundamentalUnit<Angle>::Name,
+                  FundamentalUnit<Frequency>::Name,
+                  FundamentalUnit<Force>::Name,
+                  FundamentalUnit<Pressure>::Name,
+                  FundamentalUnit<Energy>::Name,
+                  FundamentalUnit<Power>::Name,
+                  FundamentalUnit<Charge>::Name,
+                  FundamentalUnit<Voltage>::Name,
+                  FundamentalUnit<Capacitance>::Name,
+                  FundamentalUnit<Resistance>::Name,
+                  FundamentalUnit<Conductance>::Name,
+                  FundamentalUnit<MagneticFlux>::Name,
+                  FundamentalUnit<MagneticField>::Name,
+                  FundamentalUnit<Inductance>::Name,
+                  FundamentalUnit<Illuminance>::Name,
+                  FundamentalUnit<AbsorbedDose>::Name,
+                  FundamentalUnit<CatalyticActivity>::Name,
+                  FundamentalUnit<DynamicViscosity>::Name,
+                  FundamentalUnit<AngularAcceleration>::Name,
+                  FundamentalUnit<Irradiance>::Name,
+                  FundamentalUnit<Entropy>::Name,
+                  FundamentalUnit<SpecificEntropy>::Name,
+                  FundamentalUnit<ThermalConductivity>::Name,
+                  FundamentalUnit<ElectricFieldStrength>::Name,
+                  FundamentalUnit<ElectricChargeDensity>::Name,
+                  FundamentalUnit<ElectricFluxDensity>::Name,
+                  FundamentalUnit<Permittivity>::Name,
+                  FundamentalUnit<Permeability>::Name,
+                  FundamentalUnit<MolarEnergy>::Name,
+                  FundamentalUnit<MolarEntropy>::Name,
+                  FundamentalUnit<Exposure>::Name,
+                  FundamentalUnit<AbsorbedDoseRate>::Name,
+                  FundamentalUnit<CatalyticConcentration>::Name,
+                  FundamentalUnit<Speed>::Name,
+                  FundamentalUnit<Acceleration>::Name
+              };
+
+        // Split the input string into value and unit
+        // NOTE: split is done based on space only!
+        std::string unit;
+        std::string buf;
+        std::stringstream ss(input_val_unit);
+        std::vector<std::string> unit_vector; // Create vector to hold our words
+        while (ss >> buf) {
+            unit_vector.push_back(buf);
+        }
+        if(unit_vector.size() != 2 ) {
+          std::cerr << "Invalid input string \'" << input_val_unit << "\'";
+          return false;
+        }
+        try {
+          *value = std::stod(unit_vector[0]);
+        }
+        catch (const std::invalid_argument& ia) {
+            std::cerr << "Invalid argument: " << ia.what() << '\n';
+            return false;
+        }
+        unit = unit_vector[1];
+
+
+        // Is this a valid unit?
+        // TODO: scaling of the value can be done here
+        for(auto unit_ : UNITS ) {
+            if( unit_.compare(unit) == 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
