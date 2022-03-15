@@ -112,14 +112,14 @@ namespace SciQ {
          * The above code will display "1" as \c a equal 1000 m and this
          * value equals 1 km. 
          */
-        constexpr double in( const Quantity& rhs ) {
+        constexpr double in( const Quantity& rhs ) const {
             return value / rhs.value;
         }
 
         /**
          * Get the value of the current quantity in its fundamental SI unit.
          */
-        constexpr double getValue() {
+        constexpr double getValue() const {
             return value;
         }
         /**
@@ -167,7 +167,7 @@ namespace SciQ {
          * getValue(). Overloading the double operator allows us to work with
          * the class seamlessly with other packages and environments.
          */
-        constexpr operator double() {
+        constexpr operator double() const {
             return value;
         }
         
@@ -1155,7 +1155,7 @@ namespace SciQ {
      * @return The value of in SI units
      */
 
-    bool from_string( const std::string input_val_unit, double * value ) {
+    static bool from_string( const std::string input_val_unit, double * value ) {
       // Supported units
       std::vector<std::string> UNITS = {
                   FundamentalUnit<Length>::Name,
