@@ -11,3 +11,21 @@ I created this class so I would avoid having to keep track of what units is bein
 - They prevent you from incorrectly performing calculations between units; what is kg⋅m2⋅s−3⋅A−1? WATT!! This is correct but K⋅m probably not!
 - They do the conversions for you: Length l1 = 120_m; l1.in(km) => 0.12; Length l1 = 120_m + 33_cm;
 
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/nourani/ScientificQuantities.git
+```
+
+Build the test and install the headers:
+
+```bash
+cd ScientificQuantities
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
