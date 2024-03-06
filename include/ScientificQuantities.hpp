@@ -55,7 +55,7 @@ namespace SciQ {
 
     /**
      * Representation of a physical/scientific quantity using a combination of
-     * seven base quantities: length (L), mass (M), temperature (T), electric
+     * seven base quantities: length (L), mass (M), time (T), electric
      * current (EC), thermodynamic temperature (TT), amount of substance (AS),
      * and luminous intensity (LI). See
      * [this](http://physics.nist.gov/cuu/Units/units.html) page for more
